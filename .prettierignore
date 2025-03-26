@@ -1,0 +1,6 @@
+/build
+/mock
+/src/generated
+graphql.schema.json
+tsconfig.json
+schema.json
