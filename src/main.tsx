@@ -1,3 +1,19 @@
 import { createRoot } from 'react-dom/client';
+import { CssBaseline } from '@mui/material';
+import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { routeTree } from './routeTree.gen.ts';
 
-createRoot(document.getElementById('root')!).render(<p>test</p>);
+const router = createRouter({ routeTree });
+
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
+}
+
+createRoot(document.getElementById('root')!).render(
+  <>
+    <RouterProvider router={router}></RouterProvider>
+    <CssBaseline />
+  </>,
+);
