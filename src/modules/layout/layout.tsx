@@ -33,7 +33,10 @@ export const Layout: React.FC = () => {
           <Menu />
         </Stack>
       </Drawer>
-      <Outlet />
+
+      <Stack sx={{ ml: 300, mt: 12 }}>
+        <Outlet />
+      </Stack>
     </Stack>
   );
 };
