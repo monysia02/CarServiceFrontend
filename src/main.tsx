@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { CssBaseline } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen.ts';
 
@@ -11,9 +11,17 @@ declare module '@tanstack/react-router' {
   }
 }
 
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
 createRoot(document.getElementById('root')!).render(
   <>
-    <RouterProvider router={router}></RouterProvider>
-    <CssBaseline />
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={router}></RouterProvider>
+      <CssBaseline />
+    </ThemeProvider>
   </>,
 );
