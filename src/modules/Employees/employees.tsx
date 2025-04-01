@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import axios, { AxiosInstance } from 'axios';
-import { Box } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-
+import { PageHeader } from '../../components/page-header.tsx';
 
 export const Employees: FC = () => {
   const axiosInstance: AxiosInstance = axios.create({
@@ -76,23 +76,25 @@ export const Employees: FC = () => {
     },
   ];
 
-
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
+    <Stack direction="column">
+      <PageHeader title="Employees list" />
+      <Box sx={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
             },
-          },
-        }}
-        pageSizeOptions={[5]}
-        checkboxSelection
-        disableRowSelectionOnClick
-      />
-    </Box>
+          }}
+          pageSizeOptions={[5]}
+          //checkboxSelection
+          disableRowSelectionOnClick
+        />
+      </Box>
+    </Stack>
   );
 };
