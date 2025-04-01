@@ -1,21 +1,11 @@
 import { FC } from 'react';
-import axios, { AxiosInstance } from 'axios';
 import { Box, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { PageHeader } from '../../components/page-header.tsx';
+import { useGetEmployeesQuery } from './hooks/use-get-employees.tsx';
 
 export const Employees: FC = () => {
-  const axiosInstance: AxiosInstance = axios.create({
-    baseURL: 'http://localhost:5174/api/',
-  });
-
-  // axios.get('http://localhost:5174/api/Employee').then((response) => {
-  //   console.log(response);
-  // });
-
-  axiosInstance.get('Employee').then((response) => {
-    console.log(response);
-  });
+  const { data, isLoading } = useGetEmployeesQuery();
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 250 },
@@ -52,36 +42,17 @@ export const Employees: FC = () => {
     },
   ];
 
-  const rows = [
-    {
-      id: '8aac35c3-6369-4594-9797-9d1f5e25193d',
-      name: 'Elon',
-      surName: 'Musk',
-      phoneNumber: '323642385',
-      position: 'Sprzątaczka',
-    },
-    {
-      id: 'b2c6c9d1-77b4-4c6f-8c32-524f3cf61723',
-      name: 'Bill',
-      surName: 'Gates',
-      phoneNumber: '555123456',
-      position: 'Programista',
-    },
-    {
-      id: '3d8a45e1-1df9-49c5-9f0a-6746be06b5c4',
-      name: 'Ada',
-      surName: 'Lovelace',
-      phoneNumber: '123456789',
-      position: 'Analityk danych',
-    },
-  ];
+  const parsedData = data?.data.map((x) => {
+    return { id: x.employeeId, ...x };
+  });
 
   return (
     <Stack direction="column">
       <PageHeader title="Employees list" />
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={rows}
+          loading={isLoading}
+          rows={parsedData || []}
           columns={columns}
           initialState={{
             pagination: {
