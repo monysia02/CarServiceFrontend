@@ -1,29 +1,34 @@
 import React from 'react';
-import { AppBar, Drawer, Stack, Typography } from '@mui/material';
+import { AppBar, Box, Container, Drawer, Stack, Typography } from '@mui/material';
 import { Outlet } from '@tanstack/react-router';
 import { Menu } from './components/menu/menu.tsx';
 
 export const Layout: React.FC = () => {
+  const drawerWidth = 300;
+
   return (
-    <Stack>
+    <Box sx={{ display: 'flex' }}>
       <AppBar
         position="fixed"
         sx={{
           p: 4,
           backgroundColor: 'primary.main',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
-        <Stack direction={'row'} justifyContent={'end'} alignItems={'center'}>
-          <Stack direction={'row'} alignItems={'center'}></Stack>
-        </Stack>
+        <Stack direction="row" justifyContent="end" alignItems="center"></Stack>
       </AppBar>
+
       <Drawer
         variant="permanent"
-        open={true}
+        open
         ModalProps={{ keepMounted: true }}
         sx={{
-          '& .MuiDrawer-paper': {
-            width: 300,
+          width: drawerWidth,
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: {
+            width: drawerWidth,
+            boxSizing: 'border-box',
             backgroundColor: 'background.paper',
           },
         }}
@@ -33,7 +38,19 @@ export const Layout: React.FC = () => {
           <Menu />
         </Stack>
       </Drawer>
-      <Outlet />
-    </Stack>
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          mt: 10,
+        }}
+      >
+        <Container maxWidth="xl">
+          <Outlet />
+        </Container>
+      </Box>
+    </Box>
   );
 };
