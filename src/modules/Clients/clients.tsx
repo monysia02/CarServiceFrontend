@@ -2,13 +2,13 @@ import { FC } from 'react';
 import { Box, Stack } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { PageHeader } from '../../components/page-header.tsx';
-import { useGetEmployeesQuery } from './hooks/use-get-employees.tsx';
+import { useGetcustomersQuery } from './hooks/use-get-clients.tsx';
 
-export const Employees: FC = () => {
-  const { data, isLoading } = useGetEmployeesQuery();
+export const Clients: FC = () => {
+  const { data, isLoading } = useGetcustomersQuery();
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'Employee ID', width: 250 },
+    { field: 'id', headerName: 'Customer ID', width: 250 },
     {
       field: 'name',
       headerName: 'Name',
@@ -28,12 +28,6 @@ export const Employees: FC = () => {
       editable: true,
     },
     {
-      field: 'position',
-      headerName: 'Position',
-      width: 200,
-      editable: true,
-    },
-    {
       field: 'fullName',
       headerName: 'Full Name',
       width: 200,
@@ -43,12 +37,12 @@ export const Employees: FC = () => {
   ];
 
   const parsedData = data?.data.map((x) => {
-    return { id: x.employeeId, ...x };
+    return { id: x.customerId, ...x };
   });
 
   return (
     <Stack direction="column">
-      <PageHeader title="Employees list" />
+      <PageHeader title="Customers list" />
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
           loading={isLoading}
@@ -62,7 +56,6 @@ export const Employees: FC = () => {
             },
           }}
           pageSizeOptions={[5]}
-          //checkboxSelection
           disableRowSelectionOnClick
         />
       </Box>

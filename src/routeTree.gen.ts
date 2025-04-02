@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as EmployeesImport } from './routes/employees'
+import { Route as ClientsImport } from './routes/clients'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
@@ -19,6 +20,12 @@ import { Route as IndexImport } from './routes/index'
 const EmployeesRoute = EmployeesImport.update({
   id: '/employees',
   path: '/employees',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ClientsRoute = ClientsImport.update({
+  id: '/clients',
+  path: '/clients',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,6 +46,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/clients': {
+      id: '/clients'
+      path: '/clients'
+      fullPath: '/clients'
+      preLoaderRoute: typeof ClientsImport
+      parentRoute: typeof rootRoute
+    }
     '/employees': {
       id: '/employees'
       path: '/employees'
@@ -53,36 +67,41 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/clients': typeof ClientsRoute
   '/employees': typeof EmployeesRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/clients': typeof ClientsRoute
   '/employees': typeof EmployeesRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/clients': typeof ClientsRoute
   '/employees': typeof EmployeesRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/employees'
+  fullPaths: '/' | '/clients' | '/employees'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/employees'
-  id: '__root__' | '/' | '/employees'
+  to: '/' | '/clients' | '/employees'
+  id: '__root__' | '/' | '/clients' | '/employees'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClientsRoute: typeof ClientsRoute
   EmployeesRoute: typeof EmployeesRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClientsRoute: ClientsRoute,
   EmployeesRoute: EmployeesRoute,
 }
 
@@ -97,11 +116,15 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/clients",
         "/employees"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/clients": {
+      "filePath": "clients.tsx"
     },
     "/employees": {
       "filePath": "employees.tsx"
