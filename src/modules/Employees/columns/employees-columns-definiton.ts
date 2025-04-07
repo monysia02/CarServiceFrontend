@@ -1,7 +1,6 @@
 import { GridColDef } from '@mui/x-data-grid';
 
 export const columns: GridColDef[] = [
-  { field: 'id', headerName: 'Employee ID', width: 250 },
   {
     field: 'name',
     headerName: 'Name',

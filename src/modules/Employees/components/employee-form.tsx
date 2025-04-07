@@ -1,26 +1,73 @@
 import { FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { enqueueSnackbar } from 'notistack';
 import { Button, Stack, TextField, Typography } from '@mui/material';
-import { useGetEmployeesQuery } from '../hooks/use-get-employees.tsx';
+import { useGetEmployeesQuery } from '../hooks/use-get-employees.ts';
 import { useCreateEmployeeMutation } from '../hooks/use-post-emplouyee.ts';
-
-interface EmployeeFormFields {
-  name: string;
-  surName: string;
-  phoneNumber: string;
-  position: string;
-}
+import { usePutEmployeeMutation } from '../hooks/use-put-employee.ts';
+import { EmployeeFormFields } from '../types/employee.ts';
 
 type Props = {
   closeModal: () => void;
+  employee?: EmployeeFormFields;
 };
 
-export const EmployeeForm: FC<Props> = ({ closeModal }) => {
-  const { control, handleSubmit, reset } = useForm<EmployeeFormFields>();
-  const { mutate: createEmployee, isPending, isError } = useCreateEmployeeMutation();
+export const EmployeeForm: FC<Props> = ({ closeModal, employee }) => {
+  const { control, handleSubmit, reset } = useForm<EmployeeFormFields>({
+    defaultValues: {
+      name: employee?.name,
+      surName: employee?.surName,
+      phoneNumber: employee?.phoneNumber,
+      position: employee?.position,
+    },
+  });
+
+  const { mutate: updateEmployee } = usePutEmployeeMutation({
+    onSuccess: () => {
+      enqueueSnackbar('Employee updated successfully', {
+        variant: 'success',
+      });
+    },
+    onError: () => {
+      enqueueSnackbar('Error updating employee', {
+        variant: 'error',
+      });
+    },
+  });
+
+  const {
+    mutate: createEmployee,
+    isPending,
+    isError,
+  } = useCreateEmployeeMutation({
+    onSuccess: () => {
+      enqueueSnackbar('Employee created successfully', {
+        variant: 'success',
+      });
+    },
+    onError: () => {
+      enqueueSnackbar('Error creating employee', {
+        variant: 'error',
+      });
+    },
+  });
   const { refetch } = useGetEmployeesQuery();
 
   const onSubmit = (data: EmployeeFormFields) => {
+    if (employee) {
+      updateEmployee(
+        { ...data, employeeId: employee.id || '' },
+        {
+          onSuccess: () => {
+            refetch();
+            closeModal();
+            reset();
+          },
+        },
+      );
+      return;
+    }
+
     createEmployee(data, {
       onSuccess: () => {
         refetch();

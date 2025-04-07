@@ -1,13 +1,6 @@
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-
-export type Employee = {
-  employeeId: string;
-  name: string;
-  surName: string;
-  phoneNumber: string;
-  position: string;
-};
+import { Employee } from '../types/employee.ts';
 
 export type CreateEmployeeRequest = {
   name: string;
@@ -21,11 +14,15 @@ const createEmployee = async (newEmployee: CreateEmployeeRequest): Promise<Emplo
   return data;
 };
 
-export const useCreateEmployeeMutation = () => {
+type UseCreateEmployeeMutationOptions = {
+  onSuccess?: (data: Employee) => void;
+  onError?: (error: unknown) => void;
+};
+
+export const useCreateEmployeeMutation = ({ onSuccess, onError }: UseCreateEmployeeMutationOptions = {}) => {
   return useMutation({
     mutationFn: createEmployee,
-    onError: (error) => {
-      console.error('Error creating employee:', error);
-    },
+    onSuccess,
+    onError,
   });
 };
