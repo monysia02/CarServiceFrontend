@@ -9,15 +9,22 @@ export type GetClientsResponse = {
   totalCount: number;
 };
 
-const fetchClients = async (): Promise<GetClientsResponse> => {
-  const { data } = await axios.get<GetClientsResponse>('http://localhost:5174/api/Customer');
+const fetchClients = async (search?: string): Promise<GetClientsResponse> => {
+  let url = 'http://localhost:5174/api/Customer';
+
+  if (search?.trim()) {
+    const encoded = encodeURIComponent(`surname|name@=*${search}`);
+    url += `?Filters=${encoded}`;
+  }
+
+  const { data } = await axios.get<GetClientsResponse>(url);
   return data;
 };
 
-export const useGetClientsQuery = () => {
+export const useGetClientsQuery = (search?: string) => {
   return useQuery({
-    queryKey: ['customers'],
-    queryFn: fetchClients,
+    queryKey: ['customers', search],
+    queryFn: () => fetchClients(search),
     staleTime: 1000 * 60 * 5,
   });
 };

@@ -1,7 +1,8 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { enqueueSnackbar } from 'notistack';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
+import { useGetClientsQuery } from '../../Clients/hooks/use-get-clients.tsx';
 import { useGetCarsQuery } from '../hooks/use-get-cars.tsx';
 import { useCreateCarMutation } from '../hooks/use-post-car.ts';
 import { usePutCarMutation } from '../hooks/use-put-car.ts';
@@ -13,8 +14,20 @@ type Props = {
 };
 
 export const CarForm: FC<Props> = ({ closeModal, car }) => {
+  const [inputValue, setInputValue] = useState('');
+  const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    setInterval(() => {
+      setSearch(inputValue);
+    }, 500);
+  }, [inputValue]);
+
+  const { data, isLoading } = useGetClientsQuery(search);
+
   const { control, handleSubmit, reset } = useForm<CarFormFields>({
     defaultValues: {
+      customerIds: car?.customerIds || [],
       brand: car?.brand,
       model: car?.model,
       year: car?.year,
@@ -160,6 +173,49 @@ export const CarForm: FC<Props> = ({ closeModal, car }) => {
             helperText={fieldState.error?.message}
           />
         )}
+      />
+      <Controller
+        name="customerIds"
+        control={control}
+        defaultValue={car?.customerIds || []}
+        render={({ field }) => {
+          // znajdź wybrane opcje po ID
+          const selectedOptions = data?.data.filter((option) => field.value.includes(option.customerId)) ?? [];
+
+          return (
+            <Autocomplete
+              multiple
+              fullWidth
+              options={data?.data ?? []}
+              getOptionLabel={(option) => `${option.name} ${option.surName}`}
+              filterSelectedOptions
+              loading={isLoading}
+              value={selectedOptions}
+              onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
+              onChange={(_, newValue) => {
+                // zapisz tylko ID
+                const ids = newValue.map((v) => v.customerId);
+                field.onChange(ids);
+              }}
+              isOptionEqualToValue={(option, value) => option.customerId === value.customerId}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Assign Clients"
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    ),
+                  }}
+                />
+              )}
+            />
+          );
+        }}
       />
       <Button type="submit" variant="contained" color="primary" disabled={isPending}>
         {isPending ? 'Submitting...' : 'Submit'}

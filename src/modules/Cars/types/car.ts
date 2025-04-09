@@ -3,6 +3,7 @@ export type CarFormFields = {
   brand: string;
   model: string;
   year: number;
+  customerIds: string[];
   registrationNumber: string;
   vin: string;
 };
@@ -12,6 +13,7 @@ export type Car = {
   brand: string;
   model: string;
   year: number;
+  customerIds: string[];
   registrationNumber: string;
   vin: string;
 };
