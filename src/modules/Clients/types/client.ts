@@ -6,7 +6,7 @@ export type ClientFormFields = {
 };
 
 export type Client = {
-  clientId: string;
+  customerId: string;
   name: string;
   surName: string;
   phoneNumber: string;

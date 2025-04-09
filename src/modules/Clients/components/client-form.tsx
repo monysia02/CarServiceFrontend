@@ -55,7 +55,7 @@ export const ClientForm: FC<Props> = ({ closeModal, client }) => {
   const onSubmit = (data: ClientFormFields) => {
     if (client) {
       updateClient(
-        { ...data, clientId: client.id || '' },
+        { ...data, customerId: client.id || '' },
         {
           onSuccess: () => {
             refetch();

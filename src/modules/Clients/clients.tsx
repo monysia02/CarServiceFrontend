@@ -15,7 +15,7 @@ export const Clients: FC = () => {
   const [clientToEdit, setClientToEdit] = useState<ClientFormFields | undefined>();
 
   const parsedData = data?.data.map((x) => {
-    return { id: x.clientId, ...x };
+    return { id: x.customerId, ...x };
   });
 
   return (
