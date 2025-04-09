@@ -1,45 +1,18 @@
-import { FC } from 'react';
-import { Box, Stack } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { FC, useState } from 'react';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import { Box, IconButton, Stack } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import { BasicModal } from '../../components/basic-modal.tsx';
 import { PageHeader } from '../../components/page-header.tsx';
+import { columns } from './columns/cars-columns-definition.ts';
+import { CarForm } from './components/car-form.tsx';
 import { useGetCarsQuery } from './hooks/use-get-cars.tsx';
+import { CarFormFields } from './types/car.ts';
 
 export const Cars: FC = () => {
   const { data, isLoading } = useGetCarsQuery();
-
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: 'Car ID', width: 250 },
-    {
-      field: 'brand',
-      headerName: 'Brand',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'model',
-      headerName: 'Model',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'year',
-      headerName: 'Year',
-      width: 200,
-      editable: true,
-    },
-    {
-      field: 'registrationNumber',
-      headerName: 'Registration number',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'vin',
-      headerName: 'VIN',
-      width: 200,
-      editable: true,
-    },
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [carToEdit, setCarToEdit] = useState<CarFormFields | undefined>();
 
   const parsedData = data?.data.map((x) => {
     return { id: x.carId, ...x };
@@ -47,23 +20,65 @@ export const Cars: FC = () => {
 
   return (
     <Stack direction="column">
-      <PageHeader title="Cars list" />
-      <Box sx={{ height: 400, width: '100%' }}>
+      <PageHeader
+        title="Cars list"
+        onClick={() => {
+          setIsModalOpen(true);
+        }}
+      />
+      <Box sx={{ height: '75vh', width: '100%' }}>
         <DataGrid
+          disableColumnSorting
           loading={isLoading}
           rows={parsedData || []}
-          columns={columns}
+          columns={[
+            {
+              field: 'actions',
+              headerName: '',
+              width: 70,
+              renderCell: (params) => (
+                <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                  <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                    <IconButton
+                      onClick={() => {
+                        setCarToEdit(params.row);
+                        console.log(carToEdit);
+                      }}
+                    >
+                      <EditNoteIcon />
+                    </IconButton>
+                  </Stack>
+                </Stack>
+              ),
+            },
+            ...columns,
+          ]}
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 5,
+                pageSize: 10,
               },
             },
           }}
-          pageSizeOptions={[5]}
           disableRowSelectionOnClick
         />
       </Box>
+      <BasicModal
+        isModalOpen={isModalOpen || !!carToEdit}
+        setIsModalOpen={() => {
+          setIsModalOpen(false);
+          setCarToEdit(undefined);
+        }}
+        modalBody={
+          <CarForm
+            car={carToEdit}
+            closeModal={() => {
+              setIsModalOpen(false);
+              setCarToEdit(undefined);
+            }}
+          />
+        }
+      />
     </Stack>
   );
 };

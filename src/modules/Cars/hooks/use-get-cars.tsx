@@ -1,14 +1,6 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-
-export type Car = {
-  carId: string;
-  brand: string;
-  model: string;
-  registrationNumber: string;
-  vin: string;
-  year: string;
-};
+import { Car } from '../types/car.ts';
 
 export type GetCarsResponse = {
   data: Car[];

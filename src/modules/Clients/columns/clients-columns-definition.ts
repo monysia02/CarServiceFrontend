@@ -1,0 +1,29 @@
+import { GridColDef } from '@mui/x-data-grid';
+
+export const columns: GridColDef[] = [
+  {
+    field: 'name',
+    headerName: 'Name',
+    width: 150,
+    editable: true,
+  },
+  {
+    field: 'surName',
+    headerName: 'Surname',
+    width: 150,
+    editable: true,
+  },
+  {
+    field: 'phoneNumber',
+    headerName: 'Phone Number',
+    width: 150,
+    editable: true,
+  },
+  {
+    field: 'fullName',
+    headerName: 'Full Name',
+    width: 200,
+    sortable: false,
+    valueGetter: (_: never, row: { name: string; surName: string }) => `${row.name || ''} ${row.surName || ''}`,
+  },
+];
