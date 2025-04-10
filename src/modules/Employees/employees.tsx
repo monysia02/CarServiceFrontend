@@ -1,46 +1,18 @@
-import { FC } from 'react';
-import { Box, Stack } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { FC, useState } from 'react';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import { Box, IconButton, Stack } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import { BasicModal } from '../../components/basic-modal.tsx';
 import { PageHeader } from '../../components/page-header.tsx';
-import { useGetEmployeesQuery } from './hooks/use-get-employees.tsx';
+import { columns } from './columns/employees-columns-definiton.ts';
+import { EmployeeForm } from './components/employee-form.tsx';
+import { useGetEmployeesQuery } from './hooks/use-get-employees.ts';
+import { EmployeeFormFields } from './types/employee.ts';
 
 export const Employees: FC = () => {
   const { data, isLoading } = useGetEmployeesQuery();
-
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: 'Employee ID', width: 250 },
-    {
-      field: 'name',
-      headerName: 'Name',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'surName',
-      headerName: 'Surname',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'phoneNumber',
-      headerName: 'Phone Number',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'position',
-      headerName: 'Position',
-      width: 200,
-      editable: true,
-    },
-    {
-      field: 'fullName',
-      headerName: 'Full Name',
-      width: 200,
-      sortable: false,
-      valueGetter: (_: never, row: { name: string; surName: string }) => `${row.name || ''} ${row.surName || ''}`,
-    },
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [employeeToEdit, setEmployeeToEdit] = useState<EmployeeFormFields | undefined>();
 
   const parsedData = data?.data.map((x) => {
     return { id: x.employeeId, ...x };
@@ -48,24 +20,65 @@ export const Employees: FC = () => {
 
   return (
     <Stack direction="column">
-      <PageHeader title="Employees list" />
-      <Box sx={{ height: 400, width: '100%' }}>
+      <PageHeader
+        title="Employees list"
+        onClick={() => {
+          setIsModalOpen(true);
+        }}
+      />
+      <Box sx={{ height: '75vh', width: '100%' }}>
         <DataGrid
+          disableColumnSorting
           loading={isLoading}
           rows={parsedData || []}
-          columns={columns}
+          columns={[
+            {
+              field: 'actions',
+              headerName: '',
+              width: 70,
+              renderCell: (params) => (
+                <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                  <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                    <IconButton
+                      onClick={() => {
+                        setEmployeeToEdit(params.row);
+                        console.log(employeeToEdit);
+                      }}
+                    >
+                      <EditNoteIcon />
+                    </IconButton>
+                  </Stack>
+                </Stack>
+              ),
+            },
+            ...columns,
+          ]}
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 5,
+                pageSize: 10,
               },
             },
           }}
-          pageSizeOptions={[5]}
-          //checkboxSelection
           disableRowSelectionOnClick
         />
       </Box>
+      <BasicModal
+        isModalOpen={isModalOpen || !!employeeToEdit}
+        setIsModalOpen={() => {
+          setIsModalOpen(false);
+          setEmployeeToEdit(undefined);
+        }}
+        modalBody={
+          <EmployeeForm
+            employee={employeeToEdit}
+            closeModal={() => {
+              setIsModalOpen(false);
+              setEmployeeToEdit(undefined);
+            }}
+          />
+        }
+      />
     </Stack>
   );
 };

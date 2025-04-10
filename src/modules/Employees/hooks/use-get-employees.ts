@@ -1,13 +1,6 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-
-export type Employee = {
-  employeeId: string;
-  name: string;
-  surName: string;
-  phoneNumber: string;
-  position: string;
-};
+import { Employee } from '../types/employee.ts';
 
 export type GetEmployeesResponse = {
   data: Employee[];

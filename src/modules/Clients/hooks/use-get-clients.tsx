@@ -1,29 +1,30 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import { Client } from '../types/client.ts';
 
-export type Customer = {
-  customerId: string;
-  name: string;
-  surName: string;
-  phoneNumber: string;
-};
-
-export type GetcustomersResponse = {
-  data: Customer[];
+export type GetClientsResponse = {
+  data: Client[];
   currentPage: number;
   pageSize: number;
   totalCount: number;
 };
 
-const fetchcustomers = async (): Promise<GetcustomersResponse> => {
-  const { data } = await axios.get<GetcustomersResponse>('http://localhost:5174/api/Customer');
+const fetchClients = async (search?: string): Promise<GetClientsResponse> => {
+  let url = 'http://localhost:5174/api/Customer';
+
+  if (search?.trim()) {
+    const encoded = encodeURIComponent(`surname|name@=*${search}`);
+    url += `?Filters=${encoded}`;
+  }
+
+  const { data } = await axios.get<GetClientsResponse>(url);
   return data;
 };
 
-export const useGetcustomersQuery = () => {
+export const useGetClientsQuery = (search?: string) => {
   return useQuery({
-    queryKey: ['customers'],
-    queryFn: fetchcustomers,
+    queryKey: ['customers', search],
+    queryFn: () => fetchClients(search),
     staleTime: 1000 * 60 * 5,
   });
 };

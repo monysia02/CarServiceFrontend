@@ -18,7 +18,7 @@ export type GetRepairsResponse = {
 };
 
 const fetchRepairs = async (): Promise<GetRepairsResponse> => {
-  const { data } = await axios.get<GetRepairsResponse>('http://localhost:5174/api/Employee');
+  const { data } = await axios.get<GetRepairsResponse>('http://localhost:5174/api/Repair');
   return data;
 };
 
