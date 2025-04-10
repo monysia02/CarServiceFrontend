@@ -1,45 +1,18 @@
-import { FC } from 'react';
-import { Box, Stack } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { FC, useState } from 'react';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import { Box, IconButton, Stack } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import { BasicModal } from '../../components/basic-modal.tsx';
 import { PageHeader } from '../../components/page-header.tsx';
+import { columns } from './columns/repairs-columns-definition.ts';
+import { RepairForm } from './components/repair-form.tsx';
 import { useGetRepairsQuery } from './hook/use-get-repairs.tsx';
+import { RepairFormFields } from './types/repair.ts';
 
 export const Repairs: FC = () => {
   const { data, isLoading } = useGetRepairsQuery();
-
-  const columns: GridColDef[] = [
-    { field: 'id', headerName: 'Repair ID', width: 250 },
-    {
-      field: 'createdAt',
-      headerName: 'Created Date',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'finishedAt',
-      headerName: 'Finished Date',
-      width: 150,
-      editable: true,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      width: 200,
-      editable: true,
-    },
-    {
-      field: 'price',
-      headerName: 'Price',
-      width: 200,
-      editable: true,
-    },
-    {
-      field: 'description',
-      headerName: 'Description',
-      width: 150,
-      editable: true,
-    },
-  ];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [repairToEdit, setRepairToEdit] = useState<RepairFormFields | undefined>();
 
   const parsedData = data?.data.map((x) => {
     return { id: x.repairId, ...x };
@@ -47,23 +20,65 @@ export const Repairs: FC = () => {
 
   return (
     <Stack direction="column">
-      <PageHeader title="Repairs list" />
-      <Box sx={{ height: 400, width: '100%' }}>
+      <PageHeader
+        title="Repairs list"
+        onClick={() => {
+          setIsModalOpen(true);
+        }}
+      />
+      <Box sx={{ height: '75vh', width: '100%' }}>
         <DataGrid
+          disableColumnSorting
           loading={isLoading}
           rows={parsedData || []}
-          columns={columns}
+          columns={[
+            {
+              field: 'actions',
+              headerName: '',
+              width: 70,
+              renderCell: (params) => (
+                <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                  <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+                    <IconButton
+                      onClick={() => {
+                        setRepairToEdit(params.row);
+                        console.log(repairToEdit);
+                      }}
+                    >
+                      <EditNoteIcon />
+                    </IconButton>
+                  </Stack>
+                </Stack>
+              ),
+            },
+            ...columns,
+          ]}
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 5,
+                pageSize: 10,
               },
             },
           }}
-          pageSizeOptions={[5]}
           disableRowSelectionOnClick
-        />
+        ></DataGrid>
       </Box>
+      <BasicModal
+        isModalOpen={isModalOpen || !!repairToEdit}
+        setIsModalOpen={() => {
+          setIsModalOpen(false);
+          setRepairToEdit(undefined);
+        }}
+        modalBody={
+          <RepairForm
+            repair={repairToEdit}
+            closeModal={() => {
+              setIsModalOpen(false);
+              setRepairToEdit(undefined);
+            }}
+          />
+        }
+      />
     </Stack>
   );
 };

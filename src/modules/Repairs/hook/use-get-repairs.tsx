@@ -1,14 +1,6 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
-
-export type Repair = {
-  repairId: string;
-  createdAt: string;
-  finishedAt: string;
-  description: string;
-  status: string;
-  price: string;
-};
+import { Repair } from '../types/repair.ts';
 
 export type GetRepairsResponse = {
   data: Repair[];
