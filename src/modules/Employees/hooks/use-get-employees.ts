@@ -9,15 +9,22 @@ export type GetEmployeesResponse = {
   totalCount: number;
 };
 
-const fetchEmployees = async (): Promise<GetEmployeesResponse> => {
-  const { data } = await axios.get<GetEmployeesResponse>('http://localhost:5174/api/Employee');
+const fetchEmployees = async (search?: string): Promise<GetEmployeesResponse> => {
+  let url = 'http://localhost:5174/api/Employee';
+
+  if (search?.trim()) {
+    const encoded = encodeURIComponent(`name|surName@=*${search}`);
+    url += `?Filters=${encoded}`;
+  }
+
+  const { data } = await axios.get<GetEmployeesResponse>(url);
   return data;
 };
 
-export const useGetEmployeesQuery = () => {
+export const useGetEmployeesQuery = (search?: string) => {
   return useQuery({
-    queryKey: ['employees'],
-    queryFn: fetchEmployees,
+    queryKey: ['employees', search],
+    queryFn: () => fetchEmployees(search),
     staleTime: 1000 * 60 * 5,
   });
 };

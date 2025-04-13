@@ -15,10 +15,10 @@ export const Menu: React.FC = () => {
         width: '100%',
       }}
     >
-      <MenuItem icon={<BuildIcon />} title="Repairs" />
-      <MenuItem icon={<TimeToLeaveIcon />} title="Cars" />
-      <MenuItem icon={<AddReactionIcon />} title="Clients" />
-      <MenuItem icon={<Person4Icon />} title="Employees" />
+      <MenuItem icon={<BuildIcon />} link="/repairs" title="Repairs" />
+      <MenuItem icon={<TimeToLeaveIcon />} link="/cars" title="Cars" />
+      <MenuItem icon={<AddReactionIcon />} link="/clients" title="Clients" />
+      <MenuItem icon={<Person4Icon />} link="/employees" title="Employees" />
     </Stack>
   );
 };

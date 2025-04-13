@@ -1,4 +1,5 @@
 import { GridColDef } from '@mui/x-data-grid';
+import { Client } from '../../Clients/types/client.ts';
 
 export const columns: GridColDef[] = [
   { field: 'id', headerName: 'Car ID', width: 250 },
@@ -31,5 +32,14 @@ export const columns: GridColDef[] = [
     headerName: 'VIN',
     width: 200,
     editable: true,
+  },
+  {
+    field: 'customers',
+    headerName: 'Customers',
+    width: 300,
+    valueGetter: (customer: Client[]) => {
+      if (!customer) return '';
+      return customer.map((x) => `${x.name} ${x.surName}`).join(', ');
+    },
   },
 ];

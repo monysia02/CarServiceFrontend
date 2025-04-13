@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { enqueueSnackbar } from 'notistack';
 import { Autocomplete, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import { useGetClientsQuery } from '../../Clients/hooks/use-get-clients.tsx';
-import { useGetCarsQuery } from '../hooks/use-get-cars.tsx';
+import { useGetCarsQuery } from '../hooks/use-get-cars.ts';
 import { useCreateCarMutation } from '../hooks/use-post-car.ts';
 import { usePutCarMutation } from '../hooks/use-put-car.ts';
 import { CarFormFields } from '../types/car.ts';

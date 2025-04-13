@@ -1,17 +1,16 @@
-export type RepairFormFields = {
-  id?: string;
-  createdAt: Date;
-  finishedAt: Date;
-  status: string; //??
+export type Repair = {
+  repairId: string;
+  createdAt: string;
+  finishedAt: string | null;
+  status: string;
   price: number;
   description: string;
 };
 
-export type Repair = {
-  repairId: string;
-  createdAt: Date;
-  finishedAt: Date;
-  status: string; //??
-  price: number;
+export type RepairFormFields = {
+  repairId?: string;
+  carId: string;
   description: string;
+  employeeIds: string[];
+  status?: string;
 };

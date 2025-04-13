@@ -38,19 +38,18 @@ export const Layout: React.FC = () => {
           <Menu />
         </Stack>
       </Drawer>
-
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          mt: 10,
-        }}
-      >
-        <Container maxWidth="xl">
+      <Container maxWidth="lg">
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            mt: 10,
+          }}
+        >
           <Outlet />
-        </Container>
-      </Box>
+        </Box>
+      </Container>
     </Box>
   );
 };

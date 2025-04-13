@@ -1,13 +1,11 @@
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-import { Repair } from '../types/repair.ts';
+import { Repair } from '../types/repair';
 
 export type CreateRepairRequest = {
-  createdAt: Date;
-  //finishedAt: Date;
-  status: string; //??
-  price: number;
+  carId: string;
   description: string;
+  employeeIds: string[];
 };
 
 const createRepair = async (newRepair: CreateRepairRequest): Promise<Repair> => {
@@ -21,7 +19,7 @@ type UseCreateRepairMutationOptions = {
 };
 
 export const useCreateRepairMutation = ({ onSuccess, onError }: UseCreateRepairMutationOptions = {}) => {
-  return useMutation({
+  return useMutation<Repair, unknown, CreateRepairRequest>({
     mutationFn: createRepair,
     onSuccess,
     onError,

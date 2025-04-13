@@ -1,22 +1,35 @@
 import { FC, useState } from 'react';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import { Box, IconButton, Stack } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { BasicModal } from '../../components/basic-modal.tsx';
-import { PageHeader } from '../../components/page-header.tsx';
-import { columns } from './columns/repairs-columns-definition.ts';
-import { RepairForm } from './components/repair-form.tsx';
-import { useGetRepairsQuery } from './hook/use-get-repairs.tsx';
-import { RepairFormFields } from './types/repair.ts';
+import { BasicModal } from '../../components/basic-modal';
+import { PageHeader } from '../../components/page-header';
+import { columns } from './columns/repairs-columns-definition';
+import { FinishRepairModal } from './components/finish-repair-modal';
+import { RepairForm } from './components/repair-form';
+import { useGetRepairsQuery } from './hook/use-get-repairs';
+import { RepairFormFields } from './types/repair';
 
 export const Repairs: FC = () => {
   const { data, isLoading } = useGetRepairsQuery();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [repairToEdit, setRepairToEdit] = useState<RepairFormFields | undefined>();
 
-  const parsedData = data?.data.map((x) => {
-    return { id: x.repairId, ...x };
-  });
+  const [finishModalOpen, setFinishModalOpen] = useState(false);
+  const [selectedRepairId, setSelectedRepairId] = useState<string | null>(null);
+
+  // Convert the API data so that DataGrid uses row.id
+  const parsedData = data?.data.map((x) => ({
+    id: x.repairId,
+    ...x,
+  }));
+
+  const openFinishModal = (repairId: string) => {
+    setSelectedRepairId(repairId);
+    setFinishModalOpen(true);
+  };
 
   return (
     <Stack direction="column">
@@ -26,8 +39,12 @@ export const Repairs: FC = () => {
           setIsModalOpen(true);
         }}
       />
-      <Box sx={{ height: '75vh', width: '100%' }}>
+      <Box sx={{ height: '75vh', maxWidth: '100%' }}>
         <DataGrid
+          sx={{
+            width: '100%',
+            maxWidth: '100%',
+          }}
           disableColumnSorting
           loading={isLoading}
           rows={parsedData || []}
@@ -35,21 +52,29 @@ export const Repairs: FC = () => {
             {
               field: 'actions',
               headerName: '',
-              width: 70,
-              renderCell: (params) => (
-                <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
+              width: 100,
+              renderCell: (params) => {
+                // If the repair is finished (or cancelled), disable the buttons
+                const isDisabled = params.row.status === 'Finished';
+                // If you also want to disable for "Cancelled", do:
+                // const isDisabled = params.row.status === 'Finished' || params.row.status === 'Cancelled';
+
+                return (
                   <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
                     <IconButton
                       onClick={() => {
                         setRepairToEdit(params.row);
-                        console.log(repairToEdit);
                       }}
+                      disabled={isDisabled}
                     >
                       <EditNoteIcon />
                     </IconButton>
+                    <IconButton onClick={() => openFinishModal(params.row.repairId)} disabled={isDisabled}>
+                      <CheckCircleOutlineIcon />
+                    </IconButton>
                   </Stack>
-                </Stack>
-              ),
+                );
+              },
             },
             ...columns,
           ]}
@@ -61,8 +86,9 @@ export const Repairs: FC = () => {
             },
           }}
           disableRowSelectionOnClick
-        ></DataGrid>
+        />
       </Box>
+
       <BasicModal
         isModalOpen={isModalOpen || !!repairToEdit}
         setIsModalOpen={() => {
@@ -79,6 +105,17 @@ export const Repairs: FC = () => {
           />
         }
       />
+
+      {selectedRepairId && (
+        <FinishRepairModal
+          open={finishModalOpen}
+          onClose={() => {
+            setFinishModalOpen(false);
+            setSelectedRepairId(null);
+          }}
+          repairId={selectedRepairId}
+        />
+      )}
     </Stack>
   );
 };

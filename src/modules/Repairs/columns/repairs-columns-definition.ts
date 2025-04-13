@@ -1,5 +1,8 @@
+// columns/repairs-columns-definition.ts
 import { format } from 'date-fns';
 import { GridColDef } from '@mui/x-data-grid';
+import { Car } from '../../Cars/types/car.ts';
+import { Employee } from '../../Employees/types/employee.ts';
 
 export const columns: GridColDef[] = [
   {
@@ -7,8 +10,9 @@ export const columns: GridColDef[] = [
     headerName: 'Created Date',
     width: 150,
     editable: true,
-    valueFormatter: (value: string) => {
-      return format(new Date(value), 'yyyy-MM-dd');
+    valueFormatter: (date) => {
+      if (!date) return '';
+      return format(new Date(date), 'yyyy-MM-dd');
     },
   },
   {
@@ -16,8 +20,9 @@ export const columns: GridColDef[] = [
     headerName: 'Finished Date',
     width: 150,
     editable: true,
-    valueFormatter: (value: string) => {
-      return format(new Date(value), 'yyyy-MM-dd');
+    valueFormatter: (date) => {
+      if (!date) return '';
+      return format(new Date(date), 'yyyy-MM-dd');
     },
   },
   {
@@ -37,5 +42,24 @@ export const columns: GridColDef[] = [
     headerName: 'Description',
     width: 150,
     editable: true,
+  },
+  {
+    field: 'car',
+    headerName: 'Car',
+    width: 200,
+    valueGetter: (car: Car) => {
+      console.log(car, 'carInfo');
+      if (!car) return '';
+      return `${car.brand} ${car.model} (${car.registrationNumber})`;
+    },
+  },
+  {
+    field: 'employees',
+    headerName: 'Employees',
+    width: 200,
+    valueGetter: (Employees: Employee[]) => {
+      if (!Employees) return '';
+      return Employees.map((x) => `${x.name} ${x.surName}`).join(', ');
+    },
   },
 ];

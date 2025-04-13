@@ -1,4 +1,6 @@
+import React from 'react';
 import { Stack } from '@mui/material';
+import { useNavigate } from '@tanstack/react-router';
 
 type Props = {
   icon: React.ReactNode;
@@ -6,13 +8,20 @@ type Props = {
   title: string;
 };
 
-export const MenuItem: React.FC<Props> = ({ title, icon }) => {
+export const MenuItem: React.FC<Props> = ({ icon, link, title }) => {
+  const navigate = useNavigate();
+
   return (
     <Stack
       direction="row"
       gap={2}
       p={2}
       alignItems="center"
+      onClick={() => {
+        if (link) {
+          navigate({ to: link });
+        }
+      }}
       sx={{
         width: '100%',
         '&:hover': {

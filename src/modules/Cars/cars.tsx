@@ -6,7 +6,7 @@ import { BasicModal } from '../../components/basic-modal.tsx';
 import { PageHeader } from '../../components/page-header.tsx';
 import { columns } from './columns/cars-columns-definition.ts';
 import { CarForm } from './components/car-form.tsx';
-import { useGetCarsQuery } from './hooks/use-get-cars.tsx';
+import { useGetCarsQuery } from './hooks/use-get-cars.ts';
 import { CarFormFields } from './types/car.ts';
 
 export const Cars: FC = () => {
