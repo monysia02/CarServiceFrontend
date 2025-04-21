@@ -20,7 +20,6 @@ export const Repairs: FC = () => {
   const [finishModalOpen, setFinishModalOpen] = useState(false);
   const [selectedRepairId, setSelectedRepairId] = useState<string | null>(null);
 
-  // Convert the API data so that DataGrid uses row.id
   const parsedData = data?.data.map((x) => ({
     id: x.repairId,
     ...x,
@@ -54,10 +53,7 @@ export const Repairs: FC = () => {
               headerName: '',
               width: 100,
               renderCell: (params) => {
-                // If the repair is finished (or cancelled), disable the buttons
                 const isDisabled = params.row.status === 'Finished';
-                // If you also want to disable for "Cancelled", do:
-                // const isDisabled = params.row.status === 'Finished' || params.row.status === 'Cancelled';
 
                 return (
                   <Stack direction="row" spacing={1} alignItems="center" justifyContent="center">
@@ -85,6 +81,7 @@ export const Repairs: FC = () => {
               },
             },
           }}
+          pageSizeOptions={[10]} //add
           disableRowSelectionOnClick
         />
       </Box>

@@ -60,6 +60,7 @@ export const Employees: FC = () => {
               },
             },
           }}
+          pageSizeOptions={[10]} //add
           disableRowSelectionOnClick
         />
       </Box>
