@@ -1,54 +1,84 @@
-# React + TypeScript + Vite
+# Aplikacja do Zarządzania Warsztatem Samochodowym
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Opis projektu
 
-Currently, two official plugins are available:
+Aplikacja umożliwia kompleksową obsługę warsztatu samochodowego, w tym:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Zarządzanie klientami,
+- Zarządzanie naprawami,
+- Zarządzanie samochodami.
 
-## Expanding the ESLint configuration
+Jest to projekt grupowy zrealizowany w ramach studiów.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
+## Wymagania
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Przed rozpoczęciem upewnij się, że masz zainstalowane następujące narzędzia:
 
-```js
-// eslint.config.js
-import reactDom from 'eslint-plugin-react-dom';
-import reactX from 'eslint-plugin-react-x';
+- [Node.js](https://nodejs.org/) w wersji 16 lub nowszej,
+- [pnpm](https://pnpm.io/) w wersji 7 lub nowszej.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
-```
+---
+
+## Instalacja
+
+1. **Sklonuj repozytorium:**
+
+   ```bash
+   git clone <URL_DO_REPOZYTORIUM>
+   cd <NAZWA_FOLDERU>
+
+   ```
+
+2. Zainstaluj zależności:
+
+pnpm install
+
+3. Skonfiguruj zmienne środowiskowe:
+
+Skopiuj plik .env.example i utwórz plik .env:
+
+cp .env.example .env  
+W pliku .env ustaw wartość VITE_API_URL na adres swojego API.
+
+Uruchamianie aplikacji
+
+Uruchom aplikację w trybie deweloperskim:
+
+pnpm dev  
+Aplikacja będzie dostępna pod adresem: http://localhost:5173.
+
+Budowanie aplikacji do produkcji:
+
+pnpm build  
+Wynikiem będzie folder dist zawierający zbudowaną aplikację.
+
+Podgląd zbudowanej aplikacji:
+
+pnpm preview  
+Aplikacja będzie dostępna pod adresem: http://localhost:4173.
+
+Struktura projektu
+
+src/ - Główny folder projektu zawierający kod źródłowy aplikacji:
+components/ - Reużywalne komponenty React,
+pages/ - Strony aplikacji,
+services/ - Logika komunikacji z API,
+styles/ - Pliki stylów,
+utils/ - Funkcje pomocnicze.
+public/ - Folder publiczny zawierający statyczne zasoby.
+
+Konfiguracja zmiennych środowiskowych
+
+Plik .env powinien zawierać następującą zmienną:
+
+VITE_API_URL - URL do Twojego API.
+
+Przykład pliku .env znajduje się w pliku .env.example.
+
+Technologie
+
+React (z TypeScript),
+Vite (jako bundler),
+pnpm (do zarządzania zależnościami).
