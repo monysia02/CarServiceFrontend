@@ -60,6 +60,7 @@ export const Cars: FC = () => {
               },
             },
           }}
+          pageSizeOptions={[10]} //add
           disableRowSelectionOnClick
         />
       </Box>
